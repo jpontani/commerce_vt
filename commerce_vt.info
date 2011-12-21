@@ -1,0 +1,6 @@
+name = VT Commerce Module
+description = Commerce related items for VT Rec Sports
+package = VT Rec Sports
+core = 7.x
+
+dependencies[] = commerce

@@ -1,0 +1,60 @@
+<?php
+
+/**
+ *
+ */
+function commerce_vt_commerce_payment_method_info() {
+  return array(
+    'commerce_vt_refund' => array(
+      'base' => 'commerce_vt_refund',
+      'title' => t('Refund'),
+      'description' => t('A refund payment'),
+      'active' => TRUE,
+      'terminal' => TRUE,
+      'offsite' => FALSE,
+      'file' => 'commerce_vt_refund.inc',
+    ),
+  );
+}
+
+/**
+ * Implements hook_commerce_order_state_info().
+ */
+function commerce_vt_commerce_order_state_info() {
+  return array(
+    'refund' => array(
+      'name' => 'refund',
+      'title' => t('Refund'),
+      'description' => t('Orders in this state are being refunded.'),
+      'default_status' => 'refund_requested',
+    ),
+  );
+}
+
+/**
+ * Implements hook_commerce_order_status_info().
+ */
+function commerce_vt_commerce_order_status_info() {
+  // define Refund statuses
+  //  requested, processing, completed
+  $status['refund_requested'] = array(
+    'name' => 'refund_requested',
+    'title' => t('Refund: Requested'),
+    'state' => 'refund',
+    'cart' => FALSE,
+  );
+  $status['refund_processing'] = array(
+    'name' => 'refund_processing',
+    'title' => t('Refund: In Process'),
+    'state' => 'refund',
+    'cart' => FALSE,
+  );
+  $status['refund_completed'] = array(
+    'name' => 'refund_completed',
+    'title' => t('Refund: Completed'),
+    'state' => 'refund',
+    'cart' => FALSE,
+  );
+
+  return $status;
+}
