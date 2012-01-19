@@ -8,14 +8,27 @@
  * Implements hook_default_rules_configuration().
  */
 function commerce_vt_default_rules_configuration() {
-  $rule = rules_reaction_rule();
-  $rule->label = "Refund";
-  $rule->active = TRUE;
-  $rule->event('commerce_payment_methods')
-    ->condition('data_is', array('data' => 'site:name', 'value' => 'This should never be the site name.'))
-    ->action('commerce_payment_enable_commerce_vt_refund', array('commerce_order' => 'commerce-order', 'payment_method' => 'commerce_vt_refund'));
-  
-  $rules['commerce_payment_commerce_vt_refund'] = $rule;
+  $rules = array();
+
+  $rule = rules_import('{ "rules_registration_refund" : {
+      "LABEL" : "Mark registration as refunded and increase product stock.",
+      "PLUGIN" : "action set",
+      "REQUIRES" : [ "commerce_vt", "rules" ],
+      "USES VARIABLES" : { "registration" : { "label" : "Registration", "type" : "registration" } },
+      "ACTION SET" : [
+        { "commerce_vt_cancel_registrations" : { "registration_id" : [ "registration" ] } },
+        { "commerce_vt_increase_stock" : { "registration" : [ "registration" ] } },
+        { "drupal_message" : {
+            "message" : "The registration was marked as refunded, and the stock level was increased.",
+            "type" : "warning"
+          }
+        }
+      ]
+    }
+  }');
+  $rules['rules_registration_refund'] = $rule;
+
+  return $rules;
 }
 
 function commerce_vt_default_rules_configuration_alter(&$configs) {
